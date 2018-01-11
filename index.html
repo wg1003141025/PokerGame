@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="jquerys.js"></script>
+</head>
+<style>
+	*{
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	html,body{
+		width: 100%;
+		height: 100%;
+		/*padding-top: 35px;*/
+		/*box-sizing: border-box;*/
+		/*background-color: #999;*/
+		background-image: url("img/100334936.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+	}
+	.prok{
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0,0,0,0.3);
+/*		margin: auto;*/
+		position: relative;
+		left: 0;
+		right: 0;
+		margin:0 auto;
+	}
+	.pai{
+		width: 88px;
+		height: 120px;
+		background: #fff;
+		/*background-image: url('m.jpg');*/
+		background-size: 100% 100%;
+		position: absolute;
+		top: 0px;
+		left: 350px;
+		margin: 0 300px;
+		font-size: 20px;
+		border: 1px solid #000;
+		line-height: 50px;
+		text-align: center;
+		opacity: 0;
+	}
+	.active{
+		outline: 2px solid aqua;
+	}
+	button{
+		width: 60px;
+		height: 30px;
+		position: absolute;
+		left: 480px;
+		border: 0;
+		background-color: whitesmoke;
+		outline: none;
+		font-family: 苹方;
+		font-size: 20px;
+		line-height: 30px;
+	}
+	button.leftbtn{
+		top: 570px;
+	}
+	button.rightbtn{
+		top: 520px;
+	}
+</style>
+<body>	
+	<div class="prok">
+		<button class="leftbtn">&lt;</button>
+		<button class="rightbtn">&gt;</button>
+	</div>
+
+</body>
+</html>
+<script>
+	$(function(){
+		let arr = [];
+		let arrs = ['a','d','h','s'];
+		let flag = [];
+		let prok = $('.prok');
+			
+		for(let i = 0; i < 52;i++){
+
+			let color = arrs[Math.floor(Math.random()*4)],
+				num = Math.floor(Math.random()*13+1);
+
+				do{
+					color = arrs[Math.floor(Math.random()*4)];
+					num = Math.floor(Math.random()*13+1);
+
+				}while(flag[color +'_'+ num]);
+				
+				arr.push({color,num})
+				flag[color +'_'+ num] = 'true';
+//				console.log(arr);
+		}
+		let index = 0;
+		for(let i = 0;i < 7; i++){
+			for(let j = 0; j <= i;j++){
+				let divs = $('<div>');
+				let left = 350 - 50*i + 100*j;
+				let top = 50*i;
+				divs.addClass('pai')
+					.attr('id',`${i}_${j}`)
+					.data('num',arr[index]['num'])
+					.css({backgroundImage:`url(img/${arr[index].color}${arr[index].num}.jpg)`})
+//					.html(arr[index].color+'--'+arr[index].num)
+					.appendTo('.prok')
+					.delay(150*i)
+					.animate({left,top,opacity:1});
+				index++;
+			}
+		}
+
+		for(;index < 52;index++){
+			let divs = $('<div>');
+//			console.log(index)
+//			let left = -510+index*20;
+			divs.addClass('pai')
+				.addClass('left')
+				.attr('id',-2+'_'+-2)
+				.data('num',arr[index].num)
+				.css({backgroundImage:`url(img/${arr[index].color}${arr[index].num}.jpg)`})
+//				.html(arr[index].color + '--' +arr[index].num)
+				.appendTo('.prok')
+				.delay(50*index)
+				.animate({left:'50',top:'500',opacity:1})
+		}
+
+		let first = null;
+		prok.on('click','.pai', function () {
+			let coords = $(this).attr('id').split('_');
+			if($(`#${coords[0]*1+1}_${coords[1]*1}`).length || $(`#${coords[0]*1+1}_${coords[1]*1+1}`).length){
+				return;
+			}
+//			console.log(this);
+			if($(this).hasClass('active')){
+				$(this).animate({top:'+=20'});
+			}else{
+				$(this).animate({top:'-=20'});
+			}
+			$(this).toggleClass('active');
+
+			if(!first){
+				first = $(this);
+				console.log(first);
+			}else{
+				if(first.data('num') + $(this).data('num') == 14){
+					$('.active').animate({top:1,left:700}, function () {
+						$(this).remove();
+					});
+				}else{
+					$('.active').animate({"top":'+=20'}).queue(function () {
+						$(this).removeClass('active');
+						$(this).dequeue();
+					})
+				}
+				first = null;
+			}
+		})
+
+		let leftbtn = $('.leftbtn');
+		let rightbtn = $('.rightbtn');
+		let zIndex = 0;
+		rightbtn.on('click', function () {
+			if(!$('.left').length){
+				return;
+			}
+			zIndex++;
+			$('.left').last()
+					.animate({left:'+=210'})
+					.removeClass('left')
+					.addClass('right')
+					.css({zIndex})
+		})
+		leftbtn.on('click', function () {
+			if(!$('.right').length){
+				return;
+			}
+			$('.right').each(function (index,obj) {
+				let zz = $('.left').first().css('zIndex')*1+1;
+				console.log(zz);
+				$(obj).removeClass('right').addClass('left').delay(index*40).animate({left:'-=210',zIndex:zz})
+			})
+		})
+	})
+
+
+</script>
