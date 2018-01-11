@@ -68,13 +68,36 @@
 	button.rightbtn{
 		top: 520px;
 	}
+	div.rules{
+		width: 250px;
+		height: 150px;
+		background-color: rgba(255,255,255,0.5);
+		border-radius: 5px;
+		padding: 10px;
+		position: absolute;
+		right: 30px;
+		bottom: 30px;
+	}
+	.rules > h3{
+		text-align: center;
+		color: #333;
+		margin-bottom: 5px;
+	}
+	.rules > span{
+		display: block;
+		color: #333;
+		text-indent: 30px;
+	}
 </style>
-<body>	
+<body>
 	<div class="prok">
+		<div class="rules">
+			<h3>游戏规则</h3>
+			<span>鼠标点击扑克牌，当点中的两张扑克牌和为14时，消掉两张牌，直到全部消完，游戏胜利！(A为数字1，J为数字11，Q为数字12，K为数字13)。</span>
+		</div>
 		<button class="leftbtn">&lt;</button>
 		<button class="rightbtn">&gt;</button>
 	</div>
-
 </body>
 </html>
 <script>
